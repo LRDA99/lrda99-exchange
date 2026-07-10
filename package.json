@@ -1,0 +1,36 @@
+{
+  "name": "lrda99-xchange",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "prisma generate && next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "test": "node --test --import tsx tests/*.test.ts",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate deploy",
+    "db:studio": "prisma studio"
+  },
+  "dependencies": {
+    "@prisma/client": "6.11.1",
+    "lucide-react": "0.468.0",
+    "next": "16.2.6",
+    "qrcode": "1.5.4",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "22.16.4",
+    "@types/qrcode": "1.5.5",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "eslint": "9.31.0",
+    "eslint-config-next": "16.2.6",
+    "prisma": "6.11.1",
+    "tsx": "4.20.3",
+    "typescript": "5.8.3"
+  },
+  "engines": { "node": ">=20.11.0" }
+}

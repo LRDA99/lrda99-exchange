@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum OrderSide {
+  BUY
+  SELL
+}
+
+enum OrderStatus {
+  REQUESTED
+  QUOTED
+  AWAITING_PAYMENT
+  PAYMENT_REVIEW
+  SETTLING
+  COMPLETED
+  CANCELLED
+  REJECTED
+}
+
+model Order {
+  id                String      @id @default(cuid())
+  reference         String      @unique
+  side              OrderSide
+  asset             String
+  network           String
+  fiat              String
+  inputAmount       Decimal     @db.Decimal(28, 10)
+  estimatedOutput   Decimal     @db.Decimal(28, 10)
+  estimatedFee      Decimal     @db.Decimal(28, 10)
+  feeLabel          String
+  walletAddress     String?
+  customerName      String
+  customerEmail     String?
+  customerPhone     String
+  status            OrderStatus @default(REQUESTED)
+  termsAcceptedAt   DateTime
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  events OrderEvent[]
+
+  @@index([status, createdAt])
+  @@index([customerPhone, createdAt])
+}
+
+model OrderEvent {
+  id        String   @id @default(cuid())
+  orderId   String
+  type      String
+  note      String?
+  createdAt DateTime @default(now())
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId, createdAt])
+}
