@@ -6,7 +6,8 @@ A standalone Next.js manual OTC cryptocurrency quote website prepared for local 
 
 - Responsive light and cobalt themes
 - Buy and sell quote calculator for NGN, USD, GBP, and EUR
-- Fee policy: fixed $1 at or below $5; $0.15 per $1 (15%) above $5
+- Buy fees: fixed $1 at or below $5; $0.15 per $1 (15%) above $5
+- Sell fees: twice the buy fee—fixed $2 at or below $5; $0.30 per $1 (30%) above $5
 - Network-specific public receiving addresses and QR codes
 - XRP destination-tag warning
 - PostgreSQL-backed order requests and order references
@@ -19,7 +20,7 @@ A standalone Next.js manual OTC cryptocurrency quote website prepared for local 
 
 This is a manual OTC order-request system. Quotes, rates, minimum deposits, wallet networks, payments, and settlement require human confirmation. It does not automatically trade, custody private keys, verify deposits, perform KYC, or send bank/crypto payouts. Do not market those capabilities until regulated providers and audited integrations are implemented.
 
-The displayed rates are indicative placeholders. Replace them with an approved pricing source before accepting real orders. Bybit-aligned minimum deposits are confirmed manually because minimums vary by asset/network and may change.
+The displayed rates are indicative placeholders. Replace them with an approved pricing source before accepting real orders. Minimum deposits are confirmed manually because they vary by asset/network and may change.
 
 ## Project structure
 
