@@ -6,7 +6,7 @@ A standalone Next.js manual OTC cryptocurrency quote website prepared for local 
 
 - Responsive light and cobalt themes
 - Buy and sell quote calculator for NGN, USD, GBP, and EUR
-- Fee tiers: $3 below $25; $5 from $25 to $74.99; 8.5% from $75 through $200; 10% above $200
+- Fee policy: fixed $1 at or below $5; $0.15 per $1 (15%) above $5
 - Network-specific public receiving addresses and QR codes
 - XRP destination-tag warning
 - PostgreSQL-backed order requests and order references
