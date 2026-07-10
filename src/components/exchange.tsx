@@ -127,9 +127,14 @@ function assetTicker(code: AssetCode) {
   return code.split("_")[0];
 }
 
-function feeForUsd(orderUsd: number) {
-  if (orderUsd <= 5) return { kind: "fixed" as const, value: 1, label: "$1" };
-  return { kind: "rate" as const, value: 0.15, label: "15%" };
+function feeForUsd(orderUsd: number, side: TradeMode) {
+  const multiplier = side === "sell" ? 2 : 1;
+  if (orderUsd <= 5) {
+    const value = multiplier;
+    return { kind: "fixed" as const, value, label: `$${value}` };
+  }
+  const value = 0.15 * multiplier;
+  return { kind: "rate" as const, value, label: `${value * 100}%` };
 }
 
 function AssetMark({ code, size = "md" }: { code: AssetCode; size?: "sm" | "md" | "lg" }) {
@@ -208,13 +213,13 @@ export default function Home() {
     if (mode === "buy") {
       const ngnValue = numericAmount * selectedFiat.ngnPerUnit;
       const orderUsd = ngnValue / fiats.USD.ngnPerUnit;
-      const tier = feeForUsd(orderUsd);
+      const tier = feeForUsd(orderUsd, mode);
       const feeNgn = tier.kind === "fixed" ? tier.value * fiats.USD.ngnPerUnit : ngnValue * tier.value;
       return Math.max(0, ngnValue - feeNgn) / selectedAsset.priceNgn;
     }
     const ngnValue = numericAmount * selectedAsset.priceNgn;
     const orderUsd = ngnValue / fiats.USD.ngnPerUnit;
-    const tier = feeForUsd(orderUsd);
+    const tier = feeForUsd(orderUsd, mode);
     const grossFiat = ngnValue / selectedFiat.ngnPerUnit;
     const fixedFee = (tier.value * fiats.USD.ngnPerUnit) / selectedFiat.ngnPerUnit;
     return Math.max(0, grossFiat - (tier.kind === "fixed" ? fixedFee : grossFiat * tier.value));
@@ -223,7 +228,7 @@ export default function Home() {
   const feeDetails = useMemo(() => {
     const numericAmount = cleanNumber(amount);
     const orderNgn = mode === "buy" ? numericAmount * selectedFiat.ngnPerUnit : numericAmount * selectedAsset.priceNgn;
-    const tier = feeForUsd(orderNgn / fiats.USD.ngnPerUnit);
+    const tier = feeForUsd(orderNgn / fiats.USD.ngnPerUnit, mode);
     const feeNgn = tier.kind === "fixed" ? tier.value * fiats.USD.ngnPerUnit : orderNgn * tier.value;
     return { amount: feeNgn / selectedFiat.ngnPerUnit, label: tier.label };
   }, [amount, mode, selectedAsset.priceNgn, selectedFiat.ngnPerUnit]);
@@ -232,7 +237,7 @@ export default function Home() {
     const action = mode === "buy" ? "BUY" : "SELL";
     const pay = mode === "buy" ? `${amount} ${fiatCode}` : `${amount} ${assetTicker(assetCode)}`;
     const receive = mode === "buy" ? `${quote.toFixed(isStablecoin(assetCode) ? 2 : 6)} ${assetTicker(assetCode)}` : formatFiat(quote, fiatCode);
-    const message = `Hello LRDA99 XCHANGE, I want to ${action}.\nOrder: ${pay}\nEstimated receive: ${receive}\nNetwork: ${selectedAsset.network}\nFee tier: ${feeDetails.label}\nPlease confirm the current rate and Bybit-aligned minimum deposit.`;
+    const message = `Hello LRDA99 XCHANGE, I want to ${action}.\nOrder: ${pay}\nEstimated receive: ${receive}\nNetwork: ${selectedAsset.network}\nFee tier: ${feeDetails.label}\nPlease confirm the current rate, minimum deposit and my order reference.`;
     return `https://wa.me/2348079222519?text=${encodeURIComponent(message)}`;
   }, [mode, amount, fiatCode, assetCode, quote, selectedAsset.network, feeDetails.label]);
 
@@ -492,7 +497,7 @@ export default function Home() {
                 </div>
                 <div className="network-warning"><Info size={17} /><span>Send only <strong>{assetTicker(assetCode)}</strong> on the <strong>{selectedAsset.network}</strong> network. Sending on another network may permanently lose your funds.</span></div>
                 {assetCode === "XRP" && <div className="network-warning"><Info size={17} /><span>XRP destination tag is required: <strong>501565036</strong>.</span></div>}
-                <p className="microcopy">Do not transfer until support confirms the current Bybit-aligned minimum deposit and your order reference.</p>
+                <p className="microcopy">Do not transfer until support confirms the current minimum deposit and your order reference.</p>
                 <a className="review-button" href={whatsappUrl} target="_blank" rel="noreferrer">Confirm order on WhatsApp <ArrowRight size={18} /></a>
               </div>
             )}
