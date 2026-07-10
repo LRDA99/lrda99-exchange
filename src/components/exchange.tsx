@@ -128,10 +128,8 @@ function assetTicker(code: AssetCode) {
 }
 
 function feeForUsd(orderUsd: number) {
-  if (orderUsd < 25) return { kind: "fixed" as const, value: 3, label: "$3" };
-  if (orderUsd < 75) return { kind: "fixed" as const, value: 5, label: "$5" };
-  if (orderUsd <= 200) return { kind: "rate" as const, value: 0.085, label: "8.5%" };
-  return { kind: "rate" as const, value: 0.1, label: "10%" };
+  if (orderUsd <= 5) return { kind: "fixed" as const, value: 1, label: "$1" };
+  return { kind: "rate" as const, value: 0.15, label: "15%" };
 }
 
 function AssetMark({ code, size = "md" }: { code: AssetCode; size?: "sm" | "md" | "lg" }) {
