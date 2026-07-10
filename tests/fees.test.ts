@@ -11,3 +11,9 @@ test("applies 15% above $5", () => {
   assert.ok(Math.abs(calculateFeeUsd(7) - 1.05) < Number.EPSILON * 10);
   assert.equal(calculateFeeUsd(100), 15);
 });
+test("doubles the sell fee at every tier", () => {
+  assert.deepEqual(feeForUsd(5, "sell"), { kind: "fixed", value: 2, label: "$2" });
+  assert.deepEqual(feeForUsd(7, "sell"), { kind: "rate", value: 0.3, label: "30%" });
+  assert.ok(Math.abs(calculateFeeUsd(7, "sell") - 2.1) < Number.EPSILON * 10);
+  assert.equal(calculateFeeUsd(100, "sell"), 30);
+});
